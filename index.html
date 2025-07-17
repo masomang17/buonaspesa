@@ -3,214 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Negozi Convenzionati</title>
+    <title>Negozi Partner</title>
+
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-button-color: #007bff;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-hint-color: #999999;
-            --tg-theme-link-color: #007bff;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 15px;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        #app-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-            color: var(--tg-theme-text-color);
-        }
-        
-        #loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: var(--tg-theme-hint-color);
-        }
-
-        .category-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid var(--tg-theme-hint-color);
-            padding-bottom: 5px;
-        }
-
-        .shop-item {
-            display: block;
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--tg-theme-text-color);
-            font-weight: 500;
-            transition: transform 0.2s;
-        }
-
-        .shop-item:active {
-            transform: scale(0.98);
-        }
-        
-        .coming-soon-section {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 8px;
-            color: var(--tg-theme-hint-color);
-        }
-    </style>
 </head>
 <body>
 
     <div id="app-container">
-        <h1>Negozi Partner</h1>
+        <header>
+            <h1>Negozi Partner</h1>
+            <p>Scegli un negozio e visita il sito tramite il nostro link.</p>
+        </header>
         
-        <div id="loading">Caricamento negozi...</div>
-        <div id="shop-list"></div>
-
-        <div class="coming-soon-section">
-            <h2>Gift Card & Ricariche</h2>
-            <p>Questa sezione sarà disponibile a breve. Coming Soon!</p>
-        </div>
+        <main>
+            <div id="loading">
+                <div class="spinner"></div>
+                Caricamento negozi...
+            </div>
+            <div id="shop-list"></div>
+    
+            <div class="coming-soon-section">
+                <h2>Gift Card & Ricariche</h2>
+                <p>Questa sezione sarà disponibile a breve.</p>
+            </div>
+        </main>
     </div>
 
-    <script>
-        // --- ✅ IL TUO URL È STATO INSERITO QUI ---
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbycz4m_IIyyu3xAIWSIqYfi7fj2Vj7nv60VVdZtTa4xibdho5axl6ayEyddbWGRFRx6Ww/exec';
-        // ----------------------------------------------------
-
-        // Inizializza l'API di Telegram
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        
-        // Applica i colori del tema di Telegram
-        document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
-        document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#007bff');
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999');
-        document.documentElement.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#007bff');
-        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f0f0f0');
-
-
-        // Funzione per caricare i negozi
-        async function fetchNegozi() {
-            try {
-                const response = await fetch(GAS_URL);
-                if (!response.ok) {
-                    throw new Error('Errore di rete: ' + response.statusText);
-                }
-                const data = await response.json();
-                renderNegozi(data);
-            } catch (error) {
-                document.getElementById('loading').innerText = 'Impossibile caricare i negozi. Riprova più tardi.';
-                console.error('Errore nel fetch:', error);
-            }
-        }
-
-        // Funzione per mostrare i negozi nell'HTML
-        function renderNegozi(data) {
-            const shopListContainer = document.getElementById('shop-list');
-            const loadingDiv = document.getElementById('loading');
-            
-            shopListContainer.innerHTML = ''; // Pulisce la lista
-            
-            // Ordina le categorie alfabeticamente
-            const sortedCategories = Object.keys(data).sort();
-
-            if (sortedCategories.length === 0) {
-                 loadingDiv.innerText = 'Nessun negozio trovato.';
-                 return;
-            }
-            
-            loadingDiv.style.display = 'none'; // Nasconde il messaggio di caricamento
-
-            for (const category of sortedCategories) {
-                const categoryTitle = document.createElement('h2');
-                categoryTitle.className = 'category-title';
-                categoryTitle.textContent = category;
-                shopListContainer.appendChild(categoryTitle);
-
-                data[category].forEach(shop => {
-                    const shopLink = document.createElement('a');
-                    shopLink.className = 'shop-item';
-                    shopLink.href = shop.link;
-                    shopLink.textContent = shop.nome;
-                    
-                    // Aggiunge l'evento per tracciare il click
-                    shopLink.addEventListener('click', (event) => {
-                        event.preventDefault(); // Impedisce al link di aprirsi subito
-                        logClickAndRedirect(shop.nome, shop.link);
-                    });
-                    
-                    shopListContainer.appendChild(shopLink);
-                });
-            }
-        }
-
-        // Funzione per registrare il click e reindirizzare l'utente
-        async function logClickAndRedirect(shopName, shopLink) {
-            // Mostra un feedback visivo che l'azione è in corso
-            tg.HapticFeedback.impactOccurred('light');
-
-            const userData = tg.initDataUnsafe.user;
-
-            if (!userData) {
-                // Se non riusciamo a identificare l'utente, lo mandiamo comunque al link
-                console.warn("Dati utente non disponibili. Reindirizzamento diretto.");
-                window.location.href = shopLink;
-                return;
-            }
-
-            const payload = {
-                user: {
-                    id: userData.id,
-                    username: userData.username,
-                    first_name: userData.first_name,
-                    last_name: userData.last_name
-                },
-                shopName: shopName
-            };
-
-            try {
-                await fetch(GAS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Necessario per le richieste a Google Script da browser
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-            } catch (error) {
-                console.error("Errore nel loggare il click:", error);
-                // Non blocchiamo l'utente anche se il log fallisce
-            } finally {
-                // Reindirizza l'utente al link di affiliazione
-                tg.openLink(shopLink);
-            }
-        }
-
-        // Avvia il caricamento quando la pagina è pronta
-        document.addEventListener('DOMContentLoaded', fetchNegozi);
-    </script>
+    <script src="script.js" defer></script>
 
 </body>
 </html>
