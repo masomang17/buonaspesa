@@ -26,17 +26,33 @@ body {
 /* Intestazione */
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 header h1 {
     font-size: 26px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
-header p {
+/* Barra di Ricerca */
+.search-container {
+    margin-bottom: 20px;
+}
+
+#search-box {
+    width: 100%;
+    padding: 12px 15px;
     font-size: 16px;
-    color: var(--tg-theme-hint-color);
+    border-radius: 10px;
+    border: 1px solid var(--tg-theme-secondary-bg-color);
+    background-color: var(--tg-theme-secondary-bg-color);
+    color: var(--tg-theme-text-color);
+    box-sizing: border-box;
+}
+
+#search-box:focus {
+    outline: none;
+    border-color: var(--tg-theme-link-color);
 }
 
 /* Indicatore di Caricamento (Spinner) */
@@ -66,7 +82,6 @@ header p {
     }
 }
 
-
 /* Lista Negozi */
 .category-title {
     font-size: 22px;
@@ -78,15 +93,14 @@ header p {
 }
 
 .shop-item {
-    display: block;
+    display: flex;
+    align-items: center;
     background-color: var(--tg-theme-secondary-bg-color);
-    padding: 18px;
+    padding: 15px;
     margin-bottom: 12px;
     border-radius: 12px;
     text-decoration: none;
     color: var(--tg-theme-text-color);
-    font-weight: 500;
-    font-size: 17px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -98,6 +112,32 @@ header p {
 
 .shop-item:active {
     transform: scale(0.98);
+}
+
+.shop-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 15px;
+    border-radius: 8px;
+    background-color: white; /* Utile se i loghi sono trasparenti */
+}
+
+.shop-name {
+    font-weight: 500;
+    font-size: 17px;
+}
+
+/* Messaggio "Nessun risultato" */
+#no-results {
+    text-align: center;
+    color: var(--tg-theme-hint-color);
+    padding: 20px;
+}
+
+/* Classe per nascondere elementi */
+.hidden {
+    display: none !important;
 }
         
 /* Sezione "Coming Soon" */
