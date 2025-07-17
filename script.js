@@ -51,18 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const sortedCategories = Object.keys(data).sort();
 
-        if (sortedCategories.length === 0) {
+        if (sortedCategories.length === 0 && document.getElementById('search-box').value === "") {
              loadingDiv.classList.add('hidden');
              noResultsP.classList.remove('hidden');
+             noResultsP.innerText = 'Nessun negozio disponibile.';
              return;
         }
         
         loadingDiv.classList.add('hidden');
         noResultsP.classList.add('hidden');
 
+        let totalShopsRendered = 0;
         for (const category of sortedCategories) {
             const shopsInCategory = data[category];
             if (shopsInCategory.length > 0) {
+                totalShopsRendered += shopsInCategory.length;
                 const categoryTitle = document.createElement('h2');
                 categoryTitle.className = 'category-title';
                 categoryTitle.textContent = category;
@@ -76,10 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Creazione logo
                     const logo = document.createElement('img');
                     logo.className = 'shop-logo';
-                    // Assumiamo che i loghi siano in una cartella 'media' e in formato .png
                     logo.src = `media/${shop.nome}.png`; 
+                    
+                    // ✅ RIGA DI DEBUG AGGIUNTA QUI
+                    console.log("Cerco il logo a questo indirizzo:", logo.src);
+                    
                     logo.alt = `Logo ${shop.nome}`;
-                    // Se il logo non carica, mostra un'icona di default o nascondilo
                     logo.onerror = () => { logo.style.display = 'none'; };
 
                     // Creazione nome negozio
@@ -99,13 +104,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
+        if (totalShopsRendered === 0) {
+            noResultsP.innerText = 'Nessun negozio trovato per la tua ricerca.';
+            noResultsP.classList.remove('hidden');
+        }
     }
     
     // Funzione per filtrare i negozi
     function filterNegozi(query) {
         const lowerCaseQuery = query.toLowerCase().trim();
+        if (!lowerCaseQuery) {
+            renderNegozi(allShopsData);
+            return;
+        }
+        
         const filteredData = {};
-        let totalMatches = 0;
 
         for (const category in allShopsData) {
             const matchingShops = allShopsData[category].filter(shop => 
@@ -114,19 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (matchingShops.length > 0) {
                 filteredData[category] = matchingShops;
-                totalMatches += matchingShops.length;
             }
         }
         
         renderNegozi(filteredData);
-        
-        // Mostra il messaggio "Nessun risultato" se non ci sono corrispondenze
-        const noResultsP = document.getElementById('no-results');
-        if (totalMatches === 0) {
-            noResultsP.classList.remove('hidden');
-        } else {
-            noResultsP.classList.add('hidden');
-        }
     }
 
     async function logClickAndRedirect(shopName, shopLink) {
