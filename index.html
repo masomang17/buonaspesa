@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Negozi Partner</title>
-
     <link rel="stylesheet" href="style.css">
-
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -14,7 +12,9 @@
     <div id="app-container">
         <header>
             <h1>Negozi Partner</h1>
-            <p>Scegli un negozio e visita il sito tramite il nostro link.</p>
+            <div class="search-container">
+                <input type="text" id="search-box" placeholder="Cerca un negozio...">
+            </div>
         </header>
         
         <main>
@@ -23,6 +23,7 @@
                 Caricamento negozi...
             </div>
             <div id="shop-list"></div>
+            <p id="no-results" class="hidden">Nessun negozio trovato.</p>
     
             <div class="coming-soon-section">
                 <h2>Gift Card & Ricariche</h2>
