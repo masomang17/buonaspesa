@@ -95,23 +95,25 @@ header h1 {
 .shop-item {
     display: flex;
     align-items: center;
+    /* Colore di fallback */
     background-color: var(--tg-theme-secondary-bg-color);
+    color: var(--tg-theme-text-color);
     padding: 15px;
     margin-bottom: 12px;
     border-radius: 12px;
     text-decoration: none;
-    color: var(--tg-theme-text-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .shop-item:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    filter: brightness(1.1);
 }
 
 .shop-item:active {
     transform: scale(0.98);
+    filter: brightness(0.95);
 }
 
 .shop-logo {
@@ -121,11 +123,43 @@ header h1 {
     margin-right: 15px;
     border-radius: 8px;
     background-color: white; /* Utile se i loghi sono trasparenti */
+    padding: 2px;
+    box-sizing: border-box;
 }
 
 .shop-name {
     font-weight: 500;
     font-size: 17px;
+}
+
+
+/* ✅ INIZIO STILI PER CATEGORIE ✅ */
+/* Puoi aggiungere qui le tue categorie. 
+   Il nome della classe è il nome della categoria in minuscolo.
+   Es: categoria "Salute e Bellezza" diventa la classe ".category-salute-e-bellezza" */
+
+/* Categoria Elettronica */
+.category-elettronica {
+    background: linear-gradient(135deg, #4a5568, #2d3748);
+    color: white;
+}
+
+/* Categoria Moda */
+.category-moda {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+}
+
+/* Categoria Viaggi */
+.category-viaggi {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    color: white;
+}
+
+/* Categoria Casa */
+.category-casa {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
 }
 
 /* Messaggio "Nessun risultato" */
