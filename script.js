@@ -29,6 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
         root.style.setProperty('--tg-theme-link-color', themeParams.link_color || '#007bff');
         root.style.setProperty('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
     }
+    
+    // ✅ Funzione helper per creare nomi di classe CSS sicuri
+    function slugify(text) {
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Sostituisce gli spazi con -
+            .replace(/&/g, '-and-')         // Sostituisce & con 'and'
+            .replace(/[^\w\-]+/g, '')       // Rimuove tutti i caratteri non-parola
+            .replace(/\-\-+/g, '-');        // Sostituisce multipli - con uno solo
+    }
 
     async function fetchNegozi() {
         try {
@@ -42,14 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Funzione per mostrare i negozi nell'HTML
     function renderNegozi(data) {
         const shopListContainer = document.getElementById('shop-list');
         const loadingDiv = document.getElementById('loading');
         const noResultsP = document.getElementById('no-results');
         shopListContainer.innerHTML = '';
         
-        const sortedCategories = Object.keys(data).sort();
+        const sortedCategories = Object.keys(data); // I dati arrivano già ordinati dallo script Google
 
         if (sortedCategories.length === 0 && document.getElementById('search-box').value === "") {
              loadingDiv.classList.add('hidden');
@@ -73,21 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 shopsInCategory.forEach(shop => {
                     const shopLink = document.createElement('a');
-                    shopLink.className = 'shop-item';
                     shopLink.href = shop.link;
 
-                    // Creazione logo
+                    // ✅ Aggiunta della classe per lo stile della categoria
+                    shopLink.className = `shop-item category-${slugify(category)}`;
+
                     const logo = document.createElement('img');
                     logo.className = 'shop-logo';
                     logo.src = `media/${shop.nome}.png`; 
-                    
-                    // ✅ RIGA DI DEBUG AGGIUNTA QUI
-                    console.log("Cerco il logo a questo indirizzo:", logo.src);
-                    
                     logo.alt = `Logo ${shop.nome}`;
                     logo.onerror = () => { logo.style.display = 'none'; };
 
-                    // Creazione nome negozio
                     const name = document.createElement('span');
                     name.className = 'shop-name';
                     name.textContent = shop.nome;
@@ -110,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Funzione per filtrare i negozi
     function filterNegozi(query) {
         const lowerCaseQuery = query.toLowerCase().trim();
         if (!lowerCaseQuery) {
